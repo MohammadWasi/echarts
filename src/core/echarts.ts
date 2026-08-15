@@ -999,7 +999,7 @@ class ECharts extends Eventful<ECEventDefinition> {
         const url = this._zr.painter.getType() === 'svg'
             ? this.getSvgDataURL()
             : this.renderToCanvas(opts).toDataURL(
-                'image/' + (opts && opts.type || 'png')
+                'image/' + (opts.type || 'png')
             );
 
         each(excludesComponentViews, function (view) {
@@ -1022,6 +1022,10 @@ class ECharts extends Eventful<ECEventDefinition> {
             return;
         }
 
+        // `opts` is optional. Normalize it so the reads below and `getDataURL`
+        // can access its properties directly.
+        opts = opts || {};
+
         const isSvg = opts.type === 'svg';
         const groupId = this.group;
         const mathMin = Math.min;
@@ -1033,7 +1037,7 @@ class ECharts extends Eventful<ECEventDefinition> {
             let right = -MAX_NUMBER;
             let bottom = -MAX_NUMBER;
             const canvasList: {dom: HTMLCanvasElement | string, left: number, top: number}[] = [];
-            const dpr = (opts && opts.pixelRatio) || this.getDevicePixelRatio();
+            const dpr = opts.pixelRatio || this.getDevicePixelRatio();
 
             each(instances, function (chart, id) {
                 if (chart.group === groupId) {
@@ -1113,7 +1117,7 @@ class ECharts extends Eventful<ECEventDefinition> {
                 });
                 zr.refreshImmediately();
 
-                return targetCanvas.toDataURL('image/' + (opts && opts.type || 'png'));
+                return targetCanvas.toDataURL('image/' + (opts.type || 'png'));
             }
         }
         else {
